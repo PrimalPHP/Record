@@ -367,5 +367,46 @@ abstract class Record extends \ArrayObject {
 	    ( is_object( $item ) && method_exists( $item, '__toString' ) ) );
 	}
 
+	protected function parseColumnDataForWriting($schema, $data) {
+		if (!is_array($schema)) $schema = $this->schema['columns'][$schema];
+		
+		switch ($format) {
+		case 'number':
+			return number_format($data, $schema['precision'], '.', '');
+			
+		case 'date':
+		case 'datetime':
+		
+			if ($data === '' || in_array($data, array('','none'), true)) {
+				return "00-00-00 00:00:00";
+			}
+			
+			if (is_integer($value)) {
+				return date('Y-m-d H:i:s', $value);
+			}
+			
+			if (is_string($value)) {
+				//if the value is a string, convert it to a DateTime and let it trickle down
+				try {
+					$value = new DateTime($value);
+				} catch (\Exception $e) {
+				}
+			}
+			
+			if ($value instanceof DateTime) {
+				return $value->format('Y-m-d H:i:s');
+			}
+
+			//this shouldn't ever happen, given testColumnDataFormat should have seen this coming
+			throw new DomainException("Value could not be converted to a valid DateTime object.");			
+		
+		case 'enum':
+		case 'string':
+		default:
+			return (string)$data;
+		
+		}
+	}
+		
 	
 }
