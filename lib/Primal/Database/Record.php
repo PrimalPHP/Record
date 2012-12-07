@@ -55,7 +55,7 @@ abstract class Record extends \ArrayObject {
 	 * @param string $pdo 
 	 * @param string $search Optional value to load a record based on.  If string or integer, will treat as primary key. If array, will treat as key/value pairs of column/data.
 	 */
-	public function __construct($pdo = null, $search = null) {
+	public function __construct($pdo = null, $search = null, $field = null) {
 		
 		if ($pdo !== null) {
 			if (!($pdo instanceof PDO)) {
@@ -65,7 +65,7 @@ abstract class Record extends \ArrayObject {
 		}
 		
 		if ($search != null) {
-			$this->load($search);
+			$this->load($search, $field);
 		}
 		
 	}
