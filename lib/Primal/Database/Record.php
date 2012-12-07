@@ -184,9 +184,153 @@ abstract class Record extends \ArrayObject {
 		return isset($this[$column]);
 	}
 	
+	
+/**
+	Data loading functions
+*/
+	
+	/**
+	 * Loads a record from the database.
+	 *
+	 * Syntax:
+	 * 		$o->load()
+	 *			Loads the record using primary keys already present in the record array.
+	 *
+	 * 		$o->load(value)
+	 *			Loads the record using a single primary key value
+	 *
+	 * 		$o->load(value, columnName)
+	 *			Loads the record using a single value in the named column.  If multiple rows are found with that value the first row returned is used.
+	 *
+	 * 		$o->load(array('columnName'=>'value', ... ))
+	 *			Loads the record using a sequence of columnName/Value pairs.  Necessary if your table contains a multi-column primary key.
+	 *
+	 * @param integer|string|array $search optional The value of the primary key, an array of key/value pairs to search for.  If absent, the function will attempt to load using information already present in the record.
+	 * @param string $field optional If $value is an integer or string, $field may be used to define a specific column name to search within.
+	 * @return boolean True if a matching record was found
+	 */
+	public function load($search=null, $field=null) {
+		$this->checkSchema();
+	
+		$lookup = array();
+	
+		$pkeycount = count($this->schema['primaries']);
+		
+		if ($search === null) {
+			if ($pkeycount == 0) {
+				throw new MissingKeyException("Could not load record using existing data; table has no primary keys.");
+			}
+			
+			foreach ($this->schema['primaries'] as $pkey) {
+				if (!isset($this[$pkey])) {
+					throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
+				} else {
+					$lookup[$pkey] = $this[$pkey];
+				}
+			}
+		} elseif (is_array($search)) {
+			
+			if (empty($search)) {
+				throw new MissingKeyException("Could not load record using empty array.");
+			}
+			
+			if (array_values($search) === $search) {
+				throw new MissingKeyException("Loading by array requires an associative array of column/value pairs.");
+			}
+			
+			$lookup = $search;
+			
+		} elseif (is_scalar($search)) {
+
+			if ($field === null) {
+			
+				if ($pkeycount != 1) {
+					throw new MissingKeyException("Could not load record using single value; table more than one primary key.");
+				}
+			
+				$pkey = reset($this->schema['primaries']);
+				$lookup[$pkey] = $field;
+				
+			} elseif (is_string($field)) {
+
+				$lookup[$field] = $field;
+				
+			} else {
+				
+				throw new MissingKeyException("Could not load record using passed field; expected string, found ".gettype($field));
+				
+			}
+		}
+		
+		list($query, $data) = $this->buildSelectQuery($lookup);
+		
+		return $this->found = $this->loadRecord($query, $data);
+		
+		
+	}
+	
+	
+	/**
+	 * Loads a record from the database using a developer provided query string
+	 *
+	 * @param string $query 
+	 * @param array $data Named parameters for binding
+	 * @return void
+	 */
+	public function loadUsingQuery($query, $data = null) {
+		
+		return $this->found = $this->loadRecord($query, $data);
+		
+	}
+	
+	/**
+	 * Executes the passed query and, if successful, loads the result into the object record
+	 *
+	 * @param string $query 
+	 * @param string $data Named parameters for binding
+	 * @return void
+	 */
+	protected function loadRecord($query, $data = null) {
+		$result = $this->pdolink->prepare($query);
+		
+		if ( (is_array($data) ? $result->execute($data) : $result->execute()) && $result->rowCount() > 0 ) {			
+
+			$this->import($qs->fetch(PDO::FETCH_ASSOC));
+			return true;
+
+		} else {
+
+			return false;
+
+		}
+		
+	}
+	
+	
 /**
 	Schema Processing and Query construction Functions
 */
+
+	/**
+	 * Function to generate the select query for loading a record
+	 *
+	 * @param array $lookup 
+	 * @return array Tuple containing the query string and parameter data
+	 */
+	protected function buildSelectQuery($lookup) {
+		$where = array();
+		$data = array();
+		foreach ($lookup as $column=>$param) {
+			$where[] = "`{$column}` = :C$column";
+			$data[":C$column"] = $param;
+		}
+		$where = implode(' AND ', $where);
+		
+		$query = "SELECT * FROM {$this->tablename} WHERE {$where} LIMIT 1";
+		
+		return array($query, $data);
+	}
+
 
 	/**
 	 * Intended access point for table structure vs loadTableStructure. 
@@ -442,3 +586,6 @@ abstract class Record extends \ArrayObject {
 		
 	
 }
+
+
+class MissingKeyException extends DomainException {}
