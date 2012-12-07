@@ -193,9 +193,9 @@ abstract class Record extends \ArrayObject {
 			$matches = array();
 			
 			$column = array(
-				'null' => ($result['Null'] == 'YES'),
-				'unsigned' => preg_match('/unsigned/', $result['Type']),
-				'format' => 'string'
+				'null'      => ($result['Null'] == 'YES'),
+				'unsigned'  => preg_match('/unsigned/', $result['Type']),
+				'format'    => 'string',
 			);
 			
 			switch (true) {
