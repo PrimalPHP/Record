@@ -152,6 +152,38 @@ abstract class Record extends \ArrayObject {
 		return $this->found;
 	}
 	
+	
+	/**
+	 * Set Magic Method, alias to array contents
+	 *
+	 * @param string $column 
+	 * @param string $value 
+	 * @return void
+	 */
+	public function __set($column, $value) {
+		$this[$column] = $value;
+	}
+	
+	/**
+	 * Get Magic Method, alias to array contents
+	 *
+	 * @param string $column 
+	 * @return mixed
+	 */
+	public function __get($column) {
+		return $this[$column];
+	}
+	
+	/**
+	 * IsSet magic Method, alias to array contents
+	 *
+	 * @param string $column 
+	 * @return boolean
+	 */
+	public function __isset($column) {
+		return isset($this[$column]);
+	}
+	
 /**
 	Schema Processing and Query construction Functions
 */
