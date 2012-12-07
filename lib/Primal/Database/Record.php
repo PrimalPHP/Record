@@ -329,7 +329,7 @@ abstract class Record extends \ArrayObject {
 		case 'date':
 		case 'datetime':
 		
-			if (in_array($data, array('','null','none'))) return; //these are all acceptable values for our dates
+			if (in_array($data, array('','none'))) return; //these are all acceptable values for our dates
 			
 			try {
 				if (new DateTime($data)) {
