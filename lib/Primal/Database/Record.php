@@ -307,6 +307,171 @@ abstract class Record extends \ArrayObject {
 		
 	}
 	
+	/**
+	 * Saves the contents of the record as a new row in the database, updating the auto_increment value if one exists.
+	 *
+	 * @param boolean $replace Perform the insert as a REPLACE INTO
+	 * @return boolean
+	 */
+	public function insert($replace = false) {
+		$this->checkSchema();
+		$this->testColumnDataFormats();
+		
+		$write = array();
+		foreach ($this as $column=>$data) {
+			if (isset($this->schema['columns'][$column])) {
+				$write[$column] = $this->parseColumnDataForQuery($column, $data);
+			}
+		}
+		
+		list($query, $data) = $this->buildInsertQuery($this->tablename, $write, $replace);
+		
+		if ( $this->executeQuery($query, $data) ) {
+			
+			if (isset($this->schema['auto_increment']) && $this->schema['auto_increment']) {
+				$this[$this->schema['auto_increment']] = $this->pdo->lastInsertId();
+			}
+			
+			$this->found = true;
+			
+			return true;
+			
+		} else {
+			
+			return false;
+			
+		}
+		
+	}
+	
+	/**
+	 * Saves the contents of the record into an existing row using the values of the primary keys
+	 *
+	 * @return boolean
+	 */
+	public function update() {
+		$this->checkSchema();
+		$this->testColumnDataFormats();
+		
+		if (empty($this->schema['primaries'])) {
+			throw new MissingKeyException("Could not update record; table has no primary keys.");
+		}
+		
+		$lookup = array();
+		foreach ($this->schema['primaries'] as $pkey) {
+			if (!isset($this[$pkey])) {
+				throw new MissingKeyException("Could not update record, required primary key value was absent: $pkey");
+			} else {
+				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
+			}
+		}
+		
+		$write = array();
+		foreach ($this as $column=>$data) {
+			if (isset($this->schema['columns'][$column])) {
+				$write[$column] = $this->parseColumnDataForQuery($column, $data);
+			}
+		}
+		
+		list($query, $data) = $this->buildUpdateQuery($this->tablename, $write, $lookup);
+
+		return (boolean)$this->executeQuery($query, $data);
+		
+	}
+	
+	/**
+	 * Saves the contents of the record, automatically determining if an update or insert is needed.
+	 *
+	 * @param boolean $replace Forces a REPLACE INTO insert.
+	 * @return boolean
+	 */
+	public function save($replace = false) {
+		
+		if ($replace) {
+			
+			return $this->insert(true);
+			
+		} elseif ($this->found === null) {
+			//we don't know if this record exists, so we need to find out
+			
+			$this->checkIfExists();
+		}
+		
+		if ($this->found) {
+			return $this->update();
+		} else {
+			return $this->insert();
+		}
+			
+	}
+	
+	/**
+	 * Changes a single value on the record and immediately updates the database with that value. Performs an insert if no record exists.
+	 *
+	 * @param string $column 
+	 * @param string $value 
+	 * @return boolean
+	 */
+	public function set($column, $value) {
+		if ($this->found === null) {
+			//we don't know if this record exists, so we need to find out
+			
+			$this->checkIfExists();
+		}
+		
+		$write = array();
+		$write[$column] = $this->parseColumnDataForQuery($column, $value);
+
+		$this[$column] = $value;
+		
+		if ($this->found) {
+			//record exists, perform a single field update
+			
+			$lookup = array();
+			foreach ($this->schema['primaries'] as $pkey) {
+				if (!isset($this[$pkey])) {
+					throw new MissingKeyException("Could not update record, required primary key value was absent: $pkey");
+				} else {
+					$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
+				}
+			}
+						
+			list($query, $data) = $this->buildUpdateQuery($this->tablename, $write, $lookup);
+
+			return (boolean)$this->executeQuery($query, $data);
+			
+		} else {
+			//record doesn't exist, just do a full insert
+			
+			return $this->insert();
+			
+		}
+
+	}
+	
+	/**
+	 * Tests to see if the record exists in the database based on the primary key values
+	 *
+	 * @return boolean
+	 */
+	protected function checkIfExists() {
+		$this->checkSchema();
+		$this->testColumnDataFormats();
+		
+		$lookup = array();
+		foreach ($this->schema['primaries'] as $pkey) {
+			if (!isset($this[$pkey])) {
+				throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
+			} else {
+				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
+			}
+		}
+		
+		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
+		
+		return $this->found = (boolean)$this->executeQuery($query, $data);
+		
+	}
 	
 	/**
 	 * Runs the passed query using the internal PDO link.  Returns the PDOStatement object if successful
@@ -354,6 +519,59 @@ abstract class Record extends \ArrayObject {
 		return array($query, $data);
 	}
 
+
+	/**
+	 * Function to generate the insert query for saving a new record
+	 *
+	 * @param string $tablename 
+	 * @param array $write Data to be stored
+	 * @param boolean $replace Should the insert be performed as a replacement
+	 * @return array Tuple containing the query string and parameter data
+	 */
+	protected function buildInsertQuery($tablename, array $write, $replace = false) {
+		$set = array();
+		$data = array();
+		foreach ($write as $column=>$param) {
+			$set[] = "`{$column}` = :S$column";
+			$data[":S$column"] = $param;
+		}
+		$set = implode(', ', $set);
+		
+		$query = ($replace ? "REPLACE" : "INSERT") . "INTO {$tablename} SET {$set}";
+		
+		return array($query, $data);
+	}
+	
+	/**
+	 * Function to generate the update query for saving an existing record
+	 *
+	 * @param string $tablename 
+	 * @param array $write Data to be stored
+	 * @param array $lookup Data to control which row is updated
+	 * @return void
+	 */
+	protected function buildUpdateQuery($tablename, array $write, array $lookup) {
+		$set = array();
+		$where = array();
+		$data = array();
+		
+		foreach ($write as $column=>$param) {
+			$set[] = "`{$column}` = :S$column";
+			$data[":S$column"] = $param;
+		}
+		
+		foreach ($lookup as $column=>$param) {
+			$where[] = "`{$column}` = :W$column";
+			$data[":W$column"] = $param;
+		}
+		
+		$set = implode(', ', $set);
+		$where = implode(' AND ', $where);
+		
+		$query = "UPDATE {$tablename} SET {$set} WHERE {$where}";
+		
+		return array($query, $data);
+	}
 
 	/**
 	 * Intended access point for table structure vs buildTableSchema. 
