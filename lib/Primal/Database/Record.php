@@ -225,7 +225,7 @@ abstract class Record extends \ArrayObject {
 				if (!isset($this[$pkey])) {
 					throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
 				} else {
-					$lookup[$pkey] = $this[$pkey];
+					$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
 				}
 			}
 		} elseif (is_array($search)) {
@@ -238,7 +238,10 @@ abstract class Record extends \ArrayObject {
 				throw new MissingKeyException("Loading by array requires an associative array of column/value pairs.");
 			}
 			
-			$lookup = $search;
+			$lookup = array();
+			foreach ($search as $column=>$param) {
+				$lookup[$column] = $this->parseColumnDataForQuery($column, $param);
+			}
 			
 		} elseif (is_scalar($search)) {
 
@@ -249,11 +252,11 @@ abstract class Record extends \ArrayObject {
 				}
 			
 				$pkey = reset($this->schema['primaries']);
-				$lookup[$pkey] = $field;
+				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $search);
 				
 			} elseif (is_string($field)) {
 
-				$lookup[$field] = $field;
+				$lookup[$field] = $this->parseColumnDataForQuery($field, $search);
 				
 			} else {
 				
@@ -581,7 +584,7 @@ abstract class Record extends \ArrayObject {
 	 * @param string $data 
 	 * @return void
 	 */
-	protected function parseColumnDataForWriting($schema, $data) {
+	protected function parseColumnDataForQuery($schema, $data) {
 		if (!is_array($schema)) $schema = $this->schema['columns'][$schema];
 		
 		switch ($format) {
