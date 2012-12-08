@@ -333,7 +333,7 @@ abstract class Record extends \ArrayObject {
 
 
 	/**
-	 * Intended access point for table structure vs loadTableStructure. 
+	 * Intended access point for table structure vs buildTableSchema. 
 	 * Uses a static local variable (which is retained at the subclass level) to retain structure between instances
 	 * Override this in a subclass if you wish to use a more persistent cache.
 	 *
@@ -342,7 +342,7 @@ abstract class Record extends \ArrayObject {
 	protected function getCachedSchema() {
 		static $structure;
 	
-		return $structure ?: $structure = $this->loadTableStructure();
+		return $structure ?: $structure = $this->buildTableSchema();
 	}
 
 
@@ -352,7 +352,9 @@ abstract class Record extends \ArrayObject {
 	 *
 	 * @return array
 	 */
-	protected function loadTableSchema() {
+	protected function buildTableSchema($tablename = null) {
+
+		if ($tablename === null) $tablename = $this->tablename;
 
 		$structure = array(
 			'columns'=>array(),
@@ -361,7 +363,7 @@ abstract class Record extends \ArrayObject {
 			'loaded' => true
 		);
 
-		$query = $this->pdo->query("DESCRIBE {$this->tablename}");
+		$query = $this->pdo->query("DESCRIBE {$tablename}");
 		$results = $query->fetchAll(PDO::FETCH_ASSOC);
 		
 		foreach ($results as $result) {
