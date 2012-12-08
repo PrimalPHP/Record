@@ -454,7 +454,7 @@ abstract class Record extends \ArrayObject {
 	 *
 	 * @return boolean
 	 */
-	protected function checkIfExists() {
+	public function checkIfExists() {
 		$this->checkSchema();
 		$this->testColumnDataFormats();
 		
