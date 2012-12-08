@@ -294,7 +294,7 @@ abstract class Record extends \ArrayObject {
 	 * @return void
 	 */
 	protected function loadRecord($query, $data = null) {
-		$result = $this->pdolink->prepare($query);
+		$result = $this->pdo->prepare($query);
 		
 		if ( (is_array($data) ? $result->execute($data) : $result->execute()) && $result->rowCount() > 0 ) {			
 
