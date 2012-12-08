@@ -265,7 +265,7 @@ abstract class Record extends \ArrayObject {
 			}
 		}
 		
-		list($query, $data) = $this->buildSelectQuery($lookup);
+		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
 		
 		return $this->found = $this->loadRecord($query, $data);
 		
@@ -317,10 +317,10 @@ abstract class Record extends \ArrayObject {
 	/**
 	 * Function to generate the select query for loading a record
 	 *
-	 * @param array $lookup 
+	 * @param array $lookup Data to control which row is loaded
 	 * @return array Tuple containing the query string and parameter data
 	 */
-	protected function buildSelectQuery($lookup) {
+	protected function buildSelectQuery($tablename, array $lookup) {
 		$where = array();
 		$data = array();
 		foreach ($lookup as $column=>$param) {
@@ -329,7 +329,7 @@ abstract class Record extends \ArrayObject {
 		}
 		$where = implode(' AND ', $where);
 		
-		$query = "SELECT * FROM {$this->tablename} WHERE {$where} LIMIT 1";
+		$query = "SELECT * FROM {$tablename} WHERE {$where} LIMIT 1";
 		
 		return array($query, $data);
 	}
