@@ -439,6 +439,12 @@ abstract class Record extends \ArrayObject {
 	}
 
 	
+	/**
+	 * Verifies if the class schema has been defined for the needs of the current task, and loads it if not.
+	 *
+	 * @param boolean $writing
+	 * @return void
+	 */
 	protected function checkSchema($writing = false) {
 		if (isset($this->schema['loaded'])) return; //this schema was loaded from the DB, we know it'll all be there.
 		
@@ -472,6 +478,12 @@ abstract class Record extends \ArrayObject {
 	Data validation routines
 **/
 
+
+	/**
+	 * Tests that data is present for all primary keys.
+	 *
+	 * @return void
+	 */
 	protected function checkPrimaryKeyes() {
 		if (!isset($this->schema['primaries']) || !is_array($this->schema['primaries'])) {
 			return true;
@@ -483,12 +495,19 @@ abstract class Record extends \ArrayObject {
 		return true;
 	}
 	
+	/**
+	 * Loops through all record values, verifying that they work with the data type for that column
+	 * Exceptions will be thrown if they cannot.
+	 *
+	 * @return void
+	 */
 	protected function testColumnDataFormats() {
 		foreach ($this as $column=>$data) {
 			if (isset($this->schema['columns'][$column])) {
 				$this->checkDataFormat($column, $data);
 			}
 		}
+		return true;
 	}
 	
 	protected function testColumnDataFormat($column, $data, $schema = null) {
@@ -544,12 +563,27 @@ abstract class Record extends \ArrayObject {
 		
 	}
 	
+	
+	/**
+	 * Internal function for testing if a passed value can be converted to a string safely
+	 *
+	 * @param string $item 
+	 * @return void
+	 */
 	protected static function IsStringable($item) {
 	   return  !is_array( $item ) &&
 	    ( ( !is_object( $item ) && settype( $item, 'string' ) !== false ) ||
 	    ( is_object( $item ) && method_exists( $item, '__toString' ) ) );
 	}
 
+
+	/**
+	 * Using table schema, process a data value to match the column type
+	 *
+	 * @param string $schema 
+	 * @param string $data 
+	 * @return void
+	 */
 	protected function parseColumnDataForWriting($schema, $data) {
 		if (!is_array($schema)) $schema = $this->schema['columns'][$schema];
 		
