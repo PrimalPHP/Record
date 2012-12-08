@@ -445,7 +445,7 @@ abstract class Record extends \ArrayObject {
 	 * @param boolean $writing
 	 * @return void
 	 */
-	protected function checkSchema($writing = false) {
+	protected function checkSchema() {
 		if (isset($this->schema['loaded'])) return; //this schema was loaded from the DB, we know it'll all be there.
 		
 		//iterate through all potential data absenses that would mean we need to get the table definition
@@ -454,10 +454,7 @@ abstract class Record extends \ArrayObject {
 			
 			if (!isset($this->schma['primaries'])) break;
 			
-			if (!$this->schma['primaries']) break;
-			
-			if (!$writing) return; 
-			//conditions for reading rows are setup and the originating call doesn't need to write, so we can stop here
+			if (!is_array($this->schma['primaries'])) break;
 			
 			if (!isset($this->schema['columns'])) break;
 			
