@@ -86,7 +86,7 @@ abstract class Record extends \ArrayObject {
 		return $this;
 	}
 	
-	
+		
 /**
 	Content manipulation functions
 */
@@ -502,6 +502,62 @@ abstract class Record extends \ArrayObject {
 		return $this->found = (boolean)$this->executeQuery($query, $data);
 		
 	}
+	
+/**
+	Public Aggrigate Calls
+*/	
+
+	public static function LoadMultiple($pdo, $query, $data = null) {
+		$instance = new static($pdo);
+		
+		//received an array of column=>value pairs to search on.
+		if (is_array($query) && $data === null) {
+			
+			$lookup = array();
+			foreach ($query as $column=>$param) {
+				$lookup[$column] = $instance->parseColumnDataForQuery($column, $param);
+			}
+
+			list($query, $data) = $instance->buildSelectQuery($instance->tablename, $lookup);
+			
+		}
+		
+		
+		if (!$query) $query = "SELECT {$tablename}.* FROM {$tablename}";
+		else {
+			$query_command = explode(' ',$query);
+			$query_command = strtoupper(reset($query_command));
+
+			switch ($query_command) {
+				case "INSERT":
+				case "REPLACE":
+				case "DELETE":
+					throw new InvalidArgumentException("You should not be using LoadMultiple for {$query_command} queries");
+
+				case "WHERE":
+				case "GROUP":
+				case "ORDER":
+				case "LIMIT":
+					$query = "SELECT * FROM {$instance->tablename} {$query}";
+					break;
+			}
+		}
+		
+		
+		$results = array();
+		if ($result = $instance->executeQuery($query, $data)) {
+			foreach ($result->fetchAll(PDO::FETCH_ASSOC) as $row) {
+				$o = new static($pdo);
+				$o->import($row);
+				$o->found = true;
+				$results[] = $o;
+			}
+		}
+		
+		return $results;
+	}
+	
+	
 	
 /**
 	Schema Processing and Query construction Functions
