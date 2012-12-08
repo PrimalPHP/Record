@@ -450,6 +450,36 @@ abstract class Record extends \ArrayObject {
 	}
 	
 	/**
+	 * Deletes a row from the database based on the values in the record primary keys
+	 *
+	 * @return void
+	 */
+	public function delete() {		
+		$this->checkSchema();
+		$this->testColumnDataFormats();
+		
+		$lookup = array();
+		foreach ($this->schema['primaries'] as $pkey) {
+			if (!isset($this[$pkey])) {
+				throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
+			} else {
+				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
+			}
+		}
+		
+		list($query, $data) = $this->buildDeleteQuery($this->tablename, $lookup);
+		
+		if ($this->executeQuery($query, $data)) {
+			$this->found = false;
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+	
+	
+	/**
 	 * Tests to see if the record exists in the database based on the primary key values
 	 *
 	 * @return boolean
@@ -569,6 +599,31 @@ abstract class Record extends \ArrayObject {
 		$where = implode(' AND ', $where);
 		
 		$query = "UPDATE {$tablename} SET {$set} WHERE {$where}";
+		
+		return array($query, $data);
+	}
+
+
+	/**
+	 * Function to generate the delete query for removing an existing record
+	 *
+	 * @param string $tablename 
+	 * @param array $write Data to be stored
+	 * @param array $lookup Data to control which row is updated
+	 * @return void
+	 */
+	protected function buildDeleteQuery($tablename, array $lookup) {
+		$where = array();
+		$data = array();
+		
+		foreach ($lookup as $column=>$param) {
+			$where[] = "`{$column}` = :W$column";
+			$data[":W$column"] = $param;
+		}
+		
+		$where = implode(' AND ', $where);
+		
+		$query = "DELETE FROM {$tablename} WHERE {$where}";
 		
 		return array($query, $data);
 	}
