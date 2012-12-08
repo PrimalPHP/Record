@@ -324,8 +324,8 @@ abstract class Record extends \ArrayObject {
 		$where = array();
 		$data = array();
 		foreach ($lookup as $column=>$param) {
-			$where[] = "`{$column}` = :C$column";
-			$data[":C$column"] = $param;
+			$where[] = "`{$column}` = :W$column";
+			$data[":W$column"] = $param;
 		}
 		$where = implode(' AND ', $where);
 		
