@@ -473,9 +473,14 @@ abstract class Record extends \ArrayObject {
 **/
 
 	protected function checkPrimaryKeyes() {
+		if (!isset($this->schema['primaries']) || !is_array($this->schema['primaries'])) {
+			return true;
+		}
+		
 		foreach ($this->schema['primaries'] as $pkey) {
 			if (!isset($this[$pkey]) || $this[$pkey]===null) return false;
 		}
+		return true;
 	}
 	
 	protected function testColumnDataFormats() {
