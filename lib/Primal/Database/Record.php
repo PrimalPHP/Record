@@ -473,6 +473,10 @@ abstract class Record extends \ArrayObject {
 		
 	}
 	
+/**
+	Schema Processing and Query construction Functions
+*/
+
 	/**
 	 * Runs the passed query using the internal PDO link.  Returns the PDOStatement object if successful
 	 *
@@ -495,10 +499,6 @@ abstract class Record extends \ArrayObject {
 		
 	}
 	
-/**
-	Schema Processing and Query construction Functions
-*/
-
 	/**
 	 * Function to generate the select query for loading a record
 	 *
