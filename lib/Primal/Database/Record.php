@@ -294,9 +294,7 @@ abstract class Record extends \ArrayObject {
 	 * @return void
 	 */
 	protected function loadRecord($query, $data = null) {
-		$result = $this->pdo->prepare($query);
-		
-		if ( (is_array($data) ? $result->execute($data) : $result->execute()) && $result->rowCount() > 0 ) {			
+		if ( $result = $this->executeQuery($query, $data) ) {			
 
 			$this->import($qs->fetch(PDO::FETCH_ASSOC));
 			return true;
@@ -309,6 +307,28 @@ abstract class Record extends \ArrayObject {
 		
 	}
 	
+	
+	/**
+	 * Runs the passed query using the internal PDO link.  Returns the PDOStatement object if successful
+	 *
+	 * @param string $query 
+	 * @param array $data 
+	 * @return false|PDOStatement
+	 */
+	protected function executeQuery($query, $data) {
+		$result = $this->pdo->prepare($query);
+		
+		if ( (is_array($data) ? $result->execute($data) : $result->execute()) && $result->rowCount() > 0) {
+						
+			return $result;
+			
+		} else {
+			
+			return false;
+			
+		}
+		
+	}
 	
 /**
 	Schema Processing and Query construction Functions
