@@ -391,12 +391,16 @@ abstract class Record extends \ArrayObject {
 	/**
 	 * Saves the contents of the record, automatically determining if an update or insert is needed.
 	 *
-	 * @param boolean $replace Forces a REPLACE INTO insert.
+	 * @param boolean $replace Forces a REPLACE INTO insert with a new auto-increment.
 	 * @return boolean
 	 */
 	public function save($replace = false) {
 		
 		if ($replace) {
+			
+			if ($this->schema['auto_increment']) {
+				unset($this->schema['auto_increment']);
+			}
 			
 			return $this->insert(true);
 			
