@@ -1,0 +1,28 @@
+{
+	"name": "primal/record",
+	"description": "Simple and portable Active Record implementation for PDO.",
+	"homepage": "http://github.com/PrimalPHP/Record",
+	"license": "MIT",
+	"keywords": ["database", "active record", "orm", "mysql"],
+	"authors": [
+		{
+			"name": "Jarvis Badgley",
+			"homepage": "http://chipersoft.com",
+			"email": "primal@chipersoft.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.7"
+	},
+	"type": "library",
+	"autoload": {
+        "psr-0": {
+            "Primal\\Database": "lib\/"
+        }
+    },
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.0.x-dev"
+		}
+	}
+}
