@@ -305,6 +305,12 @@ abstract class Record extends \ArrayObject {
 	protected function loadRecord($query, $data = null) {
 		if ( $result = $this->executeQuery($query, $data) ) {			
 
+			if ($result->rowCount() > 1) {
+				// This isn't a failure condition, but the developer may want to know about it, 
+				// so we're triggering a NOTICE instead of throwing an exception
+				trigger_error("Primal Record encountered multiple matching rows while loading from database. Only using first row.", E_USER_NOTICE);
+			}
+
 			$this->import($result->fetch(PDO::FETCH_ASSOC));
 			return true;
 
