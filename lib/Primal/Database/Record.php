@@ -57,6 +57,10 @@ abstract class Record extends \ArrayObject {
 	 */
 	public function __construct($pdo = null, $search = null, $field = null) {
 		
+		if (!$this->tablename) {
+			throw new DomainException("Record implementation is missing the table name definition.");
+		}
+		
 		if ($pdo !== null) {
 			if (!($pdo instanceof PDO)) {
 				throw new InvalidArgumentException("Expected PDO link for first argument, found ".get_class($pdo));
