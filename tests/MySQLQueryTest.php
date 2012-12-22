@@ -42,7 +42,7 @@ class ProxyException extends Exception {
 	}
 }
 
-class QueryTest extends PHPUnit_Framework_TestCase {
+class MySQLQueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithPrimary() {
 		try {

@@ -10,7 +10,7 @@ class SchemaTestImplementation extends \Primal\Database\MySQL\Record {
 	
 }
 
-class SchemaTest extends PHPUnit_Framework_TestCase {
+class MySQLSchemaTest extends PHPUnit_Framework_TestCase {
 	
 	public function testSchemaImportSinglePrimaryKey() {
 		$describe = require('support/describe-singlekey.php');
