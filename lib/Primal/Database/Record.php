@@ -627,7 +627,7 @@ abstract class Record extends \ArrayObject {
 		}
 		$set = implode(', ', $set);
 		
-		$query = ($replace ? "REPLACE" : "INSERT") . "INTO {$tablename} SET {$set}";
+		$query = ($replace ? "REPLACE" : "INSERT") . " INTO {$tablename} SET {$set}";
 		
 		return array($query, $data);
 	}
