@@ -413,6 +413,12 @@ abstract class Record extends \ArrayObject {
 	 * @return boolean
 	 */
 	public function set($column, $value) {
+		if (!isset($this->schema['columns'][$column])) {
+			throw new ColumnNotInSchemaException("$column is not a column in the {$this->tablename} table.");
+		}
+		
+		$this[$column] = $value;
+		
 		if ($this->found === null) {
 			//we don't know if this record exists, so we need to find out
 			
@@ -422,8 +428,6 @@ abstract class Record extends \ArrayObject {
 		$write = array();
 		$write[$column] = $this->parseColumnDataForQuery($column, $value);
 
-		$this[$column] = $value;
-		
 		if ($this->found) {
 			//record exists, perform a single field update
 			
