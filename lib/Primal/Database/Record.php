@@ -945,7 +945,7 @@ abstract class Record extends \ArrayObject {
 	protected function parseColumnDataForQuery($schema, $data) {
 		if (!is_array($schema)) $schema = $this->schema['columns'][$schema];
 		
-		switch ($format) {
+		switch ($schema['format']) {
 		case 'number':
 			return number_format($data, $schema['precision'], '.', '');
 			
