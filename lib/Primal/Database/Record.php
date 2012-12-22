@@ -988,3 +988,4 @@ abstract class Record extends \ArrayObject {
 
 
 class MissingKeyException extends DomainException {}
+class ColumnNotInSchemaException extends \OutOfRangeException {}
