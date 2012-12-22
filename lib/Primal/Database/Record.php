@@ -68,6 +68,11 @@ abstract class Record extends \ArrayObject {
 			$this->setPDO($pdo);
 		}
 		
+		if ($this->schema === false) {
+			//if no schema information is defined, just load it immediately.
+			$this->checkSchema();
+		}
+		
 		if ($search !== null) {
 			$this->load($search, $field);
 		}
