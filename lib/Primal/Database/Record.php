@@ -612,7 +612,7 @@ abstract class Record extends \ArrayObject {
 	 * @param array $lookup Data to control which row is loaded
 	 * @return array Tuple containing the query string and parameter data
 	 */
-	protected function buildSelectQuery($tablename, array $lookup, $limit = true) {
+	protected function buildSelectQuery($tablename, array $lookup, $limit = 0) {
 		$where = array();
 		$data = array();
 		foreach ($lookup as $column=>$param) {
@@ -621,7 +621,7 @@ abstract class Record extends \ArrayObject {
 		}
 		$where = implode(' AND ', $where);
 		
-		$query = "SELECT * FROM {$tablename} WHERE {$where}" . ($limit ? " LIMIT 1" : '');
+		$query = "SELECT * FROM {$tablename} WHERE {$where}" . ($limit ? " LIMIT ".(int)$limit : '');
 		
 		return array($query, $data);
 	}
