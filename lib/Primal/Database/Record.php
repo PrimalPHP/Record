@@ -422,15 +422,19 @@ abstract class Record extends \ArrayObject {
 	 * Changes a single value on the record and immediately updates the database with that value. Performs an insert if no record exists.
 	 *
 	 * @param string $column 
-	 * @param string $value 
+	 * @param string $value Optional, if excluded than the update will use whatever value is already defined.
 	 * @return boolean
 	 */
-	public function set($column, $value) {
+	public function set($column, $value = '---|||---') {
 		if (!isset($this->schema['columns'][$column])) {
 			throw new ColumnNotInSchemaException("$column is not a column in the {$this->tablename} table.");
 		}
 		
-		$this[$column] = $value;
+		if ($value === '---|||---') {
+			$value = isset($this[$column]) ? $this[$column] : null; //if nothing is defined, assume they meant null
+		} else {
+			$this[$column] = $value;			
+		}
 		
 		if ($this->found === null) {
 			//we don't know if this record exists, so we need to find out
