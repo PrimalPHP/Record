@@ -337,7 +337,7 @@ abstract class Record extends \ArrayObject {
 		
 		if ( $this->executeQuery($query, $data) ) {
 			
-			if (isset($this->schema['auto_increment']) && $this->schema['auto_increment'] && !$replace) {
+			if (isset($this->schema['auto_increment']) && $this->schema['auto_increment']) {
 				$this[$this->schema['auto_increment']] = $this->pdo->lastInsertId();
 			}
 			
