@@ -1,8 +1,9 @@
 <?php 
 
-include_once __DIR__.'/../lib/Primal/Database/Record.php';
+include_once __DIR__.'/../lib/Primal/Database/AbstractRecord.php';
+include_once __DIR__.'/../lib/Primal/Database/MySQL/Record.php';
 
-class SchemaTestImplementation extends \Primal\Database\Record {
+class SchemaTestImplementation extends \Primal\Database\MySQL\Record {
 	
 	protected $tablename = true;
 	protected $schema = true;

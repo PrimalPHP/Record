@@ -1,8 +1,9 @@
 <?php 
 
-include_once __DIR__.'/../lib/Primal/Database/Record.php';
+include_once __DIR__.'/../lib/Primal/Database/AbstractRecord.php';
+include_once __DIR__.'/../lib/Primal/Database/MySQL/Record.php';
 
-class MemberRecordTosser extends \Primal\Database\Record {
+class MemberRecordTosser extends \Primal\Database\MySQL\Record {
 
 	public function __construct() {
 		$this->tablename = "members";
@@ -16,7 +17,7 @@ class MemberRecordTosser extends \Primal\Database\Record {
 	}
 }
 
-class MemberAddressRecordTosser extends \Primal\Database\Record {
+class MemberAddressRecordTosser extends \Primal\Database\MySQL\Record {
 
 	public function __construct() {
 		$this->tablename = "member_addresses";
