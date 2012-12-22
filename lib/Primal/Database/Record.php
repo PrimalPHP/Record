@@ -296,7 +296,7 @@ abstract class Record extends \ArrayObject {
 	protected function loadRecord($query, $data = null) {
 		if ( $result = $this->executeQuery($query, $data) ) {			
 
-			$this->import($qs->fetch(PDO::FETCH_ASSOC));
+			$this->import($result->fetch(PDO::FETCH_ASSOC));
 			return true;
 
 		} else {
