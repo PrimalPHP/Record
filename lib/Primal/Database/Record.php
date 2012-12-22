@@ -5,11 +5,11 @@ use \InvalidArgumentException, \DomainException;
 use \DateTime;
 
 /**
- * Primal\Database\Pool - PDO Database link management library
+ * Primal\Database\AbstractRecord - Base class for Primal Record library
  * 
- * @package Primal
+ * @package Primal Record
  * @author Jarvis Badgley
- * @copyright 2008 - 2012 Jarvis Badgley
+ * @copyright 2008 - 2013 Jarvis Badgley
  */
 
 abstract class Record extends \ArrayObject {
