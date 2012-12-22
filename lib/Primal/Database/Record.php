@@ -646,6 +646,8 @@ abstract class Record extends \ArrayObject {
 		$data = array();
 		
 		foreach ($write as $column=>$param) {
+			if (isset($lookup[$column])) continue; //don't need to update primary key values
+			
 			$set[] = "`{$column}` = :S$column";
 			$data[":S$column"] = $param;
 		}
