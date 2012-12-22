@@ -769,7 +769,7 @@ abstract class Record extends \ArrayObject {
 			case preg_match('/^enum\((.*)\)/',                             $result['Type'], $matches):
 				$column['type'] = 'enum';
 				$column['format'] = 'enum';
-				$column['options'] = array_map(function ($o) {return substr($o,1,-1);}, explode($matches[1]));
+				$column['options'] = array_map(function ($o) {return substr($o,1,-1);}, explode(',',$matches[1]));
 				break;
 				
 			case preg_match('/^((?:var)?char)\((\d+)\)/',                  $result['Type'], $matches):
