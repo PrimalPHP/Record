@@ -712,7 +712,13 @@ abstract class Record extends \ArrayObject {
 	 */
 	protected function buildTableSchema($tablename = null) {
 
-		if ($tablename === null) $tablename = $this->tablename;
+		if (is_array($tablename)) {
+			$results = $tablename;
+		} else {
+			if ($tablename === null) $tablename = $this->tablename;
+			$query = $this->pdo->query("DESCRIBE {$tablename}");
+			$results = $query->fetchAll(PDO::FETCH_ASSOC);
+		}
 
 		$structure = array(
 			'columns'=>array(),
@@ -721,9 +727,6 @@ abstract class Record extends \ArrayObject {
 			'loaded' => true
 		);
 
-		$query = $this->pdo->query("DESCRIBE {$tablename}");
-		$results = $query->fetchAll(PDO::FETCH_ASSOC);
-		
 		foreach ($results as $result) {
 			$column_name = $result['Field'];
 			$matches = array();
