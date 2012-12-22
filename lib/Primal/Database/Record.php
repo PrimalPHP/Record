@@ -862,7 +862,7 @@ abstract class Record extends \ArrayObject {
 	protected function testColumnDataFormats() {
 		foreach ($this as $column=>$data) {
 			if (isset($this->schema['columns'][$column])) {
-				$this->checkDataFormat($column, $data);
+				$this->testColumnDataFormat($column, $data);
 			}
 		}
 		return true;
