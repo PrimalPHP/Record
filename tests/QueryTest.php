@@ -139,6 +139,32 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			
 		} 
 	}
+
+	public function testLoadMultipleWithTruncatedQuery() {
+		try {
+			$results = MemberRecordTosser::LoadMultiple(null, "ORDER BY `member_id`");
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
+		} catch (ProxyException $e) {
+			
+			$this->assertEquals('SELECT * FROM members ORDER BY `member_id`', $e->query);
+			$this->assertNull($e->data);
+			
+		} 
+	}
+
+	public function testLoadMultipleWithFullQuery() {
+		try {
+			$results = MemberRecordTosser::LoadMultiple(null, "SELECT * FROM members WHERE `industry`=:industry ORDER BY `member_id`", array(':industry'=>24));
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
+		} catch (ProxyException $e) {
+			
+			$this->assertEquals('SELECT * FROM members WHERE `industry`=:industry ORDER BY `member_id`', $e->query);
+			$this->assertEquals(array(':industry'=>24), $e->data);
+			
+		} 
+	}
 	
 	public function testInsert() {
 		try {
