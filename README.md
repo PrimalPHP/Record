@@ -26,7 +26,7 @@ CREATE TABLE `example_table` (
 First create your record implementation for that table.
 
 ```php
-class ExampleRecord extends \Primal\Database\Record {
+class ExampleRecord extends \Primal\Database\MySQL\Record {
 	protected $tablename = 'example_table';
 }
 ```
@@ -132,7 +132,7 @@ if ($user->found) {
 If your table schema has been locked down and will not be changing, performance can be gained by pre-creating the schema structure array in your class definition.
 
 ```php
-class Member extends \Primal\Database\Record {
+class Member extends \Primal\Database\MySQL\Record {
 	protected $tablename = 'members';
 	protected $schema = array(
     	'primaries' => array('member_id'),
@@ -257,11 +257,12 @@ class Member extends \Primal\Database\Record {
 }
 ```
 
-This structure can be made by hand, but is much easier to obtain within PHP by using the `var_export` function in conjunction with `->buildTableSchema()`:
+This structure can be made by hand, but is much easier to obtain by code using the `var_export` function in conjunction with `->buildTableSchema()`:
 
 ```php
 $record = new Member($this->mypdo);
 var_export($record->buildTableSchema());
 
-//result is the above array structure
+//output is the above array structure
 ```
+
