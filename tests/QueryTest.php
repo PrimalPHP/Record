@@ -47,6 +47,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 		try {
 			$record = new MemberRecordTosser();
 			$record->load(18);
+			
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id', $e->query);
@@ -59,6 +61,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 		try {
 			$record = new MemberRecordTosser();
 			$record->load('chipersoft','username');
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM members WHERE `username` = :Wusername', $e->query);
@@ -74,6 +78,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'membership_type'=>'Free',
 				'industry'=>24
 			));
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM members WHERE `membership_type` = :Wmembership_type AND `industry` = :Windustry', $e->query);
@@ -90,6 +96,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'industry'=>24
 			));
 			$record->load();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id', $e->query);
@@ -109,6 +117,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->load();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
@@ -141,6 +151,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->insert();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('INSERT INTO member_addresses SET `member_id` = :Smember_id, `type` = :Stype, `address_1` = :Saddress_1, `city` = :Scity', $e->query);
@@ -160,6 +172,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->insert();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('INSERT INTO members SET `username` = :Susername, `email` = :Semail, `firstname` = :Sfirstname, `balance` = :Sbalance', $e->query);
@@ -179,6 +193,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->update();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('UPDATE member_addresses SET `address_1` = :Saddress_1, `city` = :Scity WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
@@ -199,6 +215,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			));
 			$record->found = true;
 			$record->set('city','San Diego');
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('UPDATE member_addresses SET `city` = :Scity WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
@@ -219,6 +237,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			));
 			$record->found = false;
 			$record->set('city','San Diego');
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('INSERT INTO member_addresses SET `member_id` = :Smember_id, `type` = :Stype, `address_1` = :Saddress_1, `city` = :Scity', $e->query);
@@ -260,6 +280,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			));
 			$record->found = true;
 			$record->save();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('UPDATE member_addresses SET `address_1` = :Saddress_1, `city` = :Scity WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
@@ -280,6 +302,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			));
 			$record->found = false;
 			$record->save();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('INSERT INTO member_addresses SET `member_id` = :Smember_id, `type` = :Stype, `address_1` = :Saddress_1, `city` = :Scity', $e->query);
@@ -299,6 +323,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->save();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
@@ -319,6 +345,8 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 				'fluke'=>'bad data'
 			));
 			$record->delete();
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
 		} catch (ProxyException $e) {
 			
 			$this->assertEquals('DELETE FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
