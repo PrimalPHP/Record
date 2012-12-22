@@ -46,7 +46,7 @@ abstract class Record extends \ArrayObject {
 	 *
 	 * @var boolean
 	 */
-	protected $found = null;
+	public $found = null;
 	
 		
 	/**
