@@ -64,7 +64,7 @@ abstract class Record extends \ArrayObject {
 			$this->setPDO($pdo);
 		}
 		
-		if ($search != null) {
+		if ($search !== null) {
 			$this->load($search, $field);
 		}
 		
