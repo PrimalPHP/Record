@@ -719,7 +719,7 @@ abstract class Record extends \ArrayObject {
 	 *
 	 * @return array
 	 */
-	protected function buildTableSchema($tablename = null) {
+	public function buildTableSchema($tablename = null) {
 
 		if (is_array($tablename)) {
 			$results = $tablename;
