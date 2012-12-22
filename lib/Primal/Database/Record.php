@@ -717,7 +717,7 @@ abstract class Record extends \ArrayObject {
 		$structure = array(
 			'columns'=>array(),
 			'primaries'=>array(),
-			'auto_increment'=>array(),
+			'auto_increment'=>false,
 			'loaded' => true
 		);
 
