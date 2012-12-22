@@ -3,6 +3,10 @@
 include '../lib/Primal/Database/Record.php';
 
 class RecordProxy extends \Primal\Database\Record {
+	
+	protected $tablename = true;
+	protected $schema = true;
+	
 	public function proxyBuildTableSchema($describe) {
 		return parent::buildTableSchema($describe);
 	}
