@@ -117,6 +117,19 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 	
+	public function testLoadMultipleWithArray() {
+		try {
+			$results = MemberRecordTosser::LoadMultiple(null, array('industry'=>24));
+
+			$this->assertTrue(false, "Call did not trigger executeQuery.");
+		} catch (ProxyException $e) {
+			
+			$this->assertEquals('SELECT * FROM members WHERE `industry` = :Windustry', $e->query);
+			$this->assertEquals(array(':Windustry' => "24"), $e->data);
+			
+		} 
+	}
+	
 	public function testInsert() {
 		try {
 			$record = new MemberAddressRecordTosser();
