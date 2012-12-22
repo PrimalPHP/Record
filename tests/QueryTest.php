@@ -1,8 +1,8 @@
 <?php 
 
-include '../lib/Primal/Database/Record.php';
+include_once __DIR__.'/../lib/Primal/Database/Record.php';
 
-class RecordProxy extends \Primal\Database\Record {
+class MemberRecordTosser extends \Primal\Database\Record {
 
 	public function __construct() {
 		$this->tablename = "members";
@@ -16,7 +16,7 @@ class RecordProxy extends \Primal\Database\Record {
 	}
 }
 
-class RecordProxy2 extends \Primal\Database\Record {
+class MemberAddressRecordTosser extends \Primal\Database\Record {
 
 	public function __construct() {
 		$this->tablename = "member_addresses";
@@ -45,7 +45,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithPrimary() {
 		try {
-			$record = new RecordProxy();
+			$record = new MemberRecordTosser();
 			$record->load(18);
 		} catch (ProxyException $e) {
 			
@@ -57,7 +57,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithValueField() {
 		try {
-			$record = new RecordProxy();
+			$record = new MemberRecordTosser();
 			$record->load('chipersoft','username');
 		} catch (ProxyException $e) {
 			
@@ -69,7 +69,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithArray() {
 		try {
-			$record = new RecordProxy();
+			$record = new MemberRecordTosser();
 			$record->load(array(
 				'membership_type'=>'Free',
 				'industry'=>24
@@ -84,7 +84,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithRecord() {
 		try {
-			$record = new RecordProxy();
+			$record = new MemberRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'industry'=>24
@@ -100,7 +100,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testLoadWithTwoPrimaryRecord() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -119,7 +119,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 	
 	public function testInsert() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -138,7 +138,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testInsertWithAutoIncrement() {
 		try {
-			$record = new RecordProxy();
+			$record = new MemberRecordTosser();
 			$record->import(array(
 				'username'=>'chipersoft',
 				'email'=>'chiper@chipersoft.com',
@@ -157,7 +157,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 	
 	public function testUpdate() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -176,7 +176,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 	
 	public function testSetWhenFound() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -196,7 +196,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testSetWhenNotFound() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -217,7 +217,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 	public function testSetWithNonColumn() {
 		$passed = false;
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -237,7 +237,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testSaveWhenFound() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -257,7 +257,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testSaveWhenNotFound() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -277,7 +277,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 	
 	public function testSaveWhenUnknown() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',
@@ -297,7 +297,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 
 	public function testDelete() {
 		try {
-			$record = new RecordProxy2();
+			$record = new MemberAddressRecordTosser();
 			$record->import(array(
 				'member_id'=>36,
 				'type'=>'Billing',

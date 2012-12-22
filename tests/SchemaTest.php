@@ -1,8 +1,8 @@
 <?php 
 
-include '../lib/Primal/Database/Record.php';
+include_once __DIR__.'/../lib/Primal/Database/Record.php';
 
-class RecordProxy extends \Primal\Database\Record {
+class SchemaTestImplementation extends \Primal\Database\Record {
 	
 	protected $tablename = true;
 	protected $schema = true;
@@ -17,8 +17,8 @@ class SchemaTest extends PHPUnit_Framework_TestCase {
 	public function testSchemaImportSinglePrimaryKey() {
 		$describe = require('support/describe-singlekey.php');
 		
-		$record = new RecordProxy();
 		$schema = $record->proxyBuildTableSchema($describe);
+		$record = new SchemaTestImplementation();
 		
 		//verify schema elements are there
 		$this->assertArrayHasKey('columns', $schema);
@@ -63,8 +63,8 @@ class SchemaTest extends PHPUnit_Framework_TestCase {
 	public function testSchemaImportMultiplePrimaryKey() {
 		$describe = require('support/describe-multikey.php');
 		
-		$record = new RecordProxy();
 		$schema = $record->proxyBuildTableSchema($describe);
+		$record = new SchemaTestImplementation();
 		
 		//verify primary key and auto-increment
 		$this->assertEquals(array('member_id','type'), $schema['primaries']);
