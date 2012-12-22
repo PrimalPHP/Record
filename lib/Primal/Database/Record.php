@@ -495,7 +495,7 @@ abstract class Record extends \ArrayObject {
 		$lookup = array();
 		foreach ($this->schema['primaries'] as $pkey) {
 			if (!isset($this[$pkey])) {
-				throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
+				return $this->found = false;
 			} else {
 				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
 			}
