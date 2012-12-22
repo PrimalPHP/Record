@@ -49,7 +49,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			$record->load(18);
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id', $e->query);
 			$this->assertEquals(array(':Wmember_id' => "18"), $e->data);
 			
 		}
@@ -61,7 +61,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			$record->load('chipersoft','username');
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM members WHERE `username` = :Wusername LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM members WHERE `username` = :Wusername', $e->query);
 			$this->assertEquals(array(':Wusername' => "chipersoft"), $e->data);
 			
 		}
@@ -76,7 +76,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			));
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM members WHERE `membership_type` = :Wmembership_type AND `industry` = :Windustry LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM members WHERE `membership_type` = :Wmembership_type AND `industry` = :Windustry', $e->query);
 			$this->assertEquals(array(':Wmembership_type' => "Free", ':Windustry' => '24'), $e->data);
 			
 		}
@@ -92,7 +92,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			$record->load();
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM members WHERE `member_id` = :Wmember_id', $e->query);
 			$this->assertEquals(array(':Wmember_id' => "36"), $e->data);
 			
 		}
@@ -111,7 +111,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			$record->load();
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
 			$this->assertEquals(array(':Wmember_id' => "36", ':Wtype' => 'Billing'), $e->data);
 			
 		}
@@ -288,7 +288,7 @@ class QueryTest extends PHPUnit_Framework_TestCase {
 			$record->save();
 		} catch (ProxyException $e) {
 			
-			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype LIMIT 1', $e->query);
+			$this->assertEquals('SELECT * FROM member_addresses WHERE `member_id` = :Wmember_id AND `type` = :Wtype', $e->query);
 			$this->assertEquals(array(':Wmember_id' => "36", ':Wtype' => 'Billing'), $e->data);
 			
 		}
