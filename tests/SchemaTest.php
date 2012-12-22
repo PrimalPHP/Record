@@ -7,9 +7,6 @@ class SchemaTestImplementation extends \Primal\Database\Record {
 	protected $tablename = true;
 	protected $schema = true;
 	
-	public function proxyBuildTableSchema($describe) {
-		return parent::buildTableSchema($describe);
-	}
 }
 
 class SchemaTest extends PHPUnit_Framework_TestCase {
@@ -17,8 +14,8 @@ class SchemaTest extends PHPUnit_Framework_TestCase {
 	public function testSchemaImportSinglePrimaryKey() {
 		$describe = require('support/describe-singlekey.php');
 		
-		$schema = $record->proxyBuildTableSchema($describe);
 		$record = new SchemaTestImplementation();
+		$schema = $record->buildTableSchema($describe);
 		
 		//verify schema elements are there
 		$this->assertArrayHasKey('columns', $schema);
@@ -63,8 +60,8 @@ class SchemaTest extends PHPUnit_Framework_TestCase {
 	public function testSchemaImportMultiplePrimaryKey() {
 		$describe = require('support/describe-multikey.php');
 		
-		$schema = $record->proxyBuildTableSchema($describe);
 		$record = new SchemaTestImplementation();
+		$schema = $record->buildTableSchema($describe);
 		
 		//verify primary key and auto-increment
 		$this->assertEquals(array('member_id','type'), $schema['primaries']);
