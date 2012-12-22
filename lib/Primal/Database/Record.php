@@ -319,7 +319,7 @@ abstract class Record extends \ArrayObject {
 		
 		$write = array();
 		foreach ($this as $column=>$data) {
-			if (isset($this->schema['columns'][$column])) {
+			if (isset($this->schema['columns'][$column]) && ($replace || $this->schema['auto_increment'] != $column)) {
 				$write[$column] = $this->parseColumnDataForQuery($column, $data);
 			}
 		}
@@ -328,7 +328,7 @@ abstract class Record extends \ArrayObject {
 		
 		if ( $this->executeQuery($query, $data) ) {
 			
-			if (isset($this->schema['auto_increment']) && $this->schema['auto_increment']) {
+			if (isset($this->schema['auto_increment']) && $this->schema['auto_increment'] && !$replace) {
 				$this[$this->schema['auto_increment']] = $this->pdo->lastInsertId();
 			}
 			
