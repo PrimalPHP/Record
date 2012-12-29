@@ -1,8 +1,5 @@
 <?php 
 
-include_once __DIR__.'/../lib/Primal/Database/AbstractRecord.php';
-include_once __DIR__.'/../lib/Primal/Database/RecordDriver/MySQL.php';
-
 class MemberRecordTosser extends \Primal\Database\AbstractRecord {
 	use \Primal\Database\RecordDriver\MySQL;
 
@@ -140,7 +137,7 @@ class MySQLQueryTest extends PHPUnit_Framework_TestCase {
 			$this->assertEquals('SELECT * FROM members WHERE `industry` = :Windustry', $e->query);
 			$this->assertEquals(array(':Windustry' => "24"), $e->data);
 			
-		} 
+		}
 	}
 
 	public function testLoadMultipleWithTruncatedQuery() {
@@ -153,7 +150,7 @@ class MySQLQueryTest extends PHPUnit_Framework_TestCase {
 			$this->assertEquals('SELECT * FROM members ORDER BY `member_id`', $e->query);
 			$this->assertNull($e->data);
 			
-		} 
+		}
 	}
 
 	public function testLoadMultipleWithFullQuery() {
@@ -166,9 +163,9 @@ class MySQLQueryTest extends PHPUnit_Framework_TestCase {
 			$this->assertEquals('SELECT * FROM members WHERE `industry`=:industry ORDER BY `member_id`', $e->query);
 			$this->assertEquals(array(':industry'=>24), $e->data);
 			
-		} 
+		}
 	}
-	
+
 	public function testInsert() {
 		try {
 			$record = new MemberAddressRecordTosser();
