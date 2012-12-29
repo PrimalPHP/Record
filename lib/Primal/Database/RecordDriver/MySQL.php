@@ -1,15 +1,15 @@
 <?php
-namespace Primal\Database\MySQL;
+namespace Primal\Database\RecordDriver;
 
 /**
- * Primal\Database\Pool - PDO Database link management library
+ * Primal Record MySQL Data Driver
  * 
  * @package Primal
  * @author Jarvis Badgley
  * @copyright 2008 - 2012 Jarvis Badgley
  */
 
-abstract class Record extends \Primal\Database\AbstractRecord {
+trait MySQL {
 
 
 	/**

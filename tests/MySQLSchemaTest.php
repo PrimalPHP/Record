@@ -1,10 +1,11 @@
 <?php 
 
 include_once __DIR__.'/../lib/Primal/Database/AbstractRecord.php';
-include_once __DIR__.'/../lib/Primal/Database/MySQL/Record.php';
+include_once __DIR__.'/../lib/Primal/Database/RecordDriver/MySQL.php';
 
-class SchemaTestImplementation extends \Primal\Database\MySQL\Record {
-	
+class SchemaTestImplementation extends \Primal\Database\AbstractRecord {
+	use \Primal\Database\RecordDriver\MySQL;
+
 	protected $tablename = true;
 	protected $schema = true;
 	
