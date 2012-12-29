@@ -216,71 +216,130 @@ abstract class AbstractRecord extends \ArrayObject {
 	 *
 	 * @param integer|string|array $search optional The value of the primary key, an array of key/value pairs to search for.  If absent, the function will attempt to load using information already present in the record.
 	 * @param string $field optional If $value is an integer or string, $field may be used to define a specific column name to search within.
-	 * @return boolean True if a matching record was found
+	 * @return boolean         Record was found and loaded successfully
 	 */
 	public function load($search=null, $field=null) {
 		$this->checkSchema();
 	
-		$lookup = array();
-	
-		$pkeycount = count($this->schema['primaries']);
-		
 		if ($search === null) {
-			if ($pkeycount == 0) {
-				throw new MissingKeyException("Could not load record using existing data; table has no primary keys.");
-			}
 			
-			foreach ($this->schema['primaries'] as $pkey) {
-				if (!isset($this[$pkey])) {
-					throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
-				} else {
-					$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
-				}
-			}
+			return $this->loadUsingExisting();
+
 		} elseif (is_array($search)) {
 			
-			if (empty($search)) {
-				throw new MissingKeyException("Could not load record using empty array.");
-			}
-			
-			if (array_values($search) === $search) {
-				throw new MissingKeyException("Loading by array requires an associative array of column/value pairs.");
-			}
-			
-			$lookup = array();
-			foreach ($search as $column=>$param) {
-				$lookup[$column] = $this->parseColumnDataForQuery($column, $param);
-			}
+			return $this->loadUsingMultiColumn($search);
 			
 		} elseif (is_scalar($search)) {
 
 			if ($field === null) {
 			
-				if ($pkeycount != 1) {
-					throw new MissingKeyException("Could not load record using single value; table more than one primary key.");
-				}
-			
-				$pkey = reset($this->schema['primaries']);
-				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $search);
+				return $this->loadUsingPrimaryKey($search);
 				
 			} elseif (is_string($field)) {
 
-				$lookup[$field] = $this->parseColumnDataForQuery($field, $search);
-				
-			} else {
-				
-				throw new MissingKeyException("Could not load record using passed field; expected string, found ".gettype($field));
-				
+				return $this->loadUsingSingleColumn($search, $field);
+
 			}
+				
+		}
+
+		throw new MissingKeyException("Could not load record using passed arguments.");
+				
+	}
+
+	/**
+	 * Loads the record using primary keys already stored on the object
+	 *
+	 * @return boolean         Record was found and loaded successfully
+	 **/
+	public function loadUsingExisting() {
+		$this->checkSchema();
+		
+		if (count($this->schema['primaries']) == 0) {
+			throw new MissingKeyException("Could not load record using existing data; table has no primary keys.");
 		}
 		
+		foreach ($this->schema['primaries'] as $pkey) {
+			if (!isset($this[$pkey])) {
+				throw new MissingKeyException("Could not load record, required primary key value was absent: $pkey");
+			} else {
+				$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $this[$pkey]);
+			}
+		}
+
+		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
+		
+		return $this->found = $this->loadRecord($query, $data);
+	
+	}
+
+	/**
+	 * Loads the record using a value in the primary keyed column. Only works for tables with a single primary key.
+	 * @param  string|number $value The value to search for
+	 * @return boolean         Record was found and loaded successfully
+	 */
+	public function loadUsingPrimaryKey($value) {
+		$this->checkSchema();
+		
+		if (count($this->schema['primaries']) > 1) {
+			throw new MissingKeyException("Could not load record using single primary key value; table has more than one primary key.");
+		}
+		
+		$pkey = reset($this->schema['primaries']);
+
+		$lookup = array();
+		$lookup[$pkey] = $this->parseColumnDataForQuery($pkey, $value);
+
+		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
+		
+		return $this->found = $this->loadRecord($query, $data);
+
+	}
+
+	/**
+	 * Loads the record by searching for a value within a specific column
+	 * @param  string|number $value  The value to search for
+	 * @param  string $column The table column to search within
+	 * @return boolean         Record was found and loaded successfully
+	 */
+	public function loadUsingSingleColumn($value, $column) {
+		$this->checkSchema();
+		
+		$lookup = array();
+		$lookup[$column] = $this->parseColumnDataForQuery($column, $value);
+
 		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
 		
 		return $this->found = $this->loadRecord($query, $data);
 		
-		
 	}
 	
+	/**
+	 * Loads the record by searching within multiple columns.
+	 * @param  array  $search Column Name => value paired array of search criteria
+	 * @return boolean         Record was found and loaded successfully
+	 */
+	public function loadUsingMultiColumn(array $search) {
+		$this->checkSchema();
+		
+		if (empty($search)) {
+			throw new MissingKeyException("Could not load record using empty array.");
+		}
+		
+		if (array_values($search) === $search) {
+			throw new MissingKeyException("Loading by array requires an associative array of column/value pairs.");
+		}
+		
+		$lookup = array();
+		foreach ($search as $column=>$param) {
+			$lookup[$column] = $this->parseColumnDataForQuery($column, $param);
+		}
+
+		list($query, $data) = $this->buildSelectQuery($this->tablename, $lookup);
+		
+		return $this->found = $this->loadRecord($query, $data);
+
+	}
 	
 	/**
 	 * Loads a record from the database using a developer provided query string
