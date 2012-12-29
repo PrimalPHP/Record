@@ -6,6 +6,7 @@ Primal Record is an Active Record ORM library for manipulating individual tables
 
 [Primal](http://www.primalphp.com) is a collection of independent micro-libraries for simplifying common PHP tasks.
 
+**PLEASE NOTE THAT RECORD 2.0 IS IN ALPHA STATUS AND IS SUBJECT TO IMPLEMENTATION CHANGES**
 
 ##Usage
 
