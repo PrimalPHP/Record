@@ -8,6 +8,12 @@ Primal Record is an Active Record ORM library for manipulating individual tables
 
 **PLEASE NOTE THAT RECORD 2.0 IS IN ALPHA STATUS AND IS SUBJECT TO IMPLEMENTATION CHANGES**
 
+##Requirements
+
+Primal Record uses the PHP 5.4 Traits feature for the abstraction of database engine drivers.  You must have PHP 5.4 to use this library.
+
+Primal Record has no other dependencies.
+
 ##Usage
 
 Primal Record is an abstract class and *must* be extended to function.  For rapid development, the only implementation requirement is the definition of a table name.  Primal Record will automatically request the table schema from your database, caching the structure for later usage.
