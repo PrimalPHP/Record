@@ -1,7 +1,6 @@
 <?php 
 
-class MemberRecordTosser extends \Primal\Database\AbstractRecord {
-	use \Primal\Database\RecordDriver\MySQL;
+class MemberRecordTosser extends \Primal\Database\MySQL\Record {
 
 	public function __construct() {
 		$this->tablename = "members";
@@ -15,8 +14,7 @@ class MemberRecordTosser extends \Primal\Database\AbstractRecord {
 	}
 }
 
-class MemberAddressRecordTosser extends \Primal\Database\AbstractRecord {
-	use \Primal\Database\RecordDriver\MySQL;
+class MemberAddressRecordTosser extends \Primal\Database\MySQL\Record {
 
 	public function __construct() {
 		$this->tablename = "member_addresses";

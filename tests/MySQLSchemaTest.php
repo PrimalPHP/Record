@@ -1,8 +1,7 @@
 <?php 
 
-class SchemaTestImplementation extends \Primal\Database\AbstractRecord {
-	use \Primal\Database\RecordDriver\MySQL;
-
+class SchemaTestImplementation extends \Primal\Database\MySQL\Record {
+	
 	protected $tablename = true;
 	protected $schema = true;
 	
