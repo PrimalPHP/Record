@@ -27,9 +27,8 @@ CREATE TABLE `example_table` (
 First create your record implementation for that table.
 
 ```php
-class ExampleRecord extends \Primal\Database\AbstractRecord {
-    use \Primal\Database\RecordDriver\MySQL; //define the database driver
-	protected $tablename = 'example_table';  //define the table name
+class ExampleRecord extends \Primal\Database\MySQL\Record {
+	protected $tablename = 'example_table';
 }
 ```
 
@@ -134,8 +133,7 @@ if ($user->found) {
 If your table schema has been locked down and will not be changing, performance can be gained by pre-creating the schema structure array in your class definition.
 
 ```php
-class Member extends \Primal\Database\AbstractRecord {
-    use \Primal\Database\RecordDriver\MySQL;
+class Member extends \Primal\Database\MySQL\Record {
 	protected $tablename = 'members';
 	protected $schema = array(
     	'primaries' => array('member_id'),
